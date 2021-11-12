@@ -77,7 +77,7 @@ const deletePost = (req,res) => {
 
 const updateStatus = (req,res) => {
     const {id} = req.params;
-    Item.updateOne({_id:id}, {isDone: true}, err => {
+    Item.updateOne({_id:id}, {isDone: !req.body.item.isDone}, err => {
         if(err){
             res.status(404)
             console.log(err);

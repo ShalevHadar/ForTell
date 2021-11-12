@@ -16,23 +16,30 @@ import Moment from "react-moment";
 const URL = `http://localhost:3030/api/items`;
 
 export default function Items() {
-  const [items, setItem] = useState([]);
+  const [items, setItems] = useState([]);
+  const [flag, setFlag] = useState(false);
 
   const fetchItems = () => {
     axios
-    .get(URL, {
-      validateStatus: (status) => {
-        return status < 400;
-      },
-    })
-    .then((res) => {
-      setItem(res.data);
-    });
+      .get(URL, {
+        validateStatus: (status) => {
+          return status < 400;
+        },
+      })
+      .then((res) => {
+        setItems(res.data);
+      });
+  };
+
+  const handleCick = (item) => {
+    console.log(item);
+    axios.patch(`${URL}/${item._id}`, {item})
+    .then(fetchItems()).then(setFlag)
   }
 
   useEffect(() => {
-    fetchItems()
-  }, []);
+    fetchItems();
+  }, [flag]);
 
   return (
     <>
@@ -46,6 +53,7 @@ export default function Items() {
             <TableRow>
               <TableCell>Cotent</TableCell>
               <TableCell align="right">Name</TableCell>
+              <TableCell align="right">Class</TableCell>
               <TableCell align="right">Created At</TableCell>
               <TableCell align="right">Status</TableCell>
             </TableRow>
@@ -59,11 +67,16 @@ export default function Items() {
                 >
                   <TableCell>{item.content}</TableCell>
                   <TableCell align="right">{item.name}</TableCell>
+                  <TableCell align="right">{item.currClass}</TableCell>
                   <TableCell align="right">
                     <Moment format="lll">{item.createdAt}</Moment>
                   </TableCell>
                   <TableCell align="right">
-                  <Button variant="contained" color="success">Done</Button>
+                    <Button variant="contained" color="success"
+                    onClick={() => handleCick(item)}
+                    >
+                      Done
+                    </Button>
                   </TableCell>
                 </TableRow>
               )
@@ -82,25 +95,34 @@ export default function Items() {
             <TableRow>
               <TableCell>Cotent</TableCell>
               <TableCell align="right">Name</TableCell>
+              <TableCell align="right">Class</TableCell>
               <TableCell align="right">Created At</TableCell>
               <TableCell align="right">Status</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {items.map((item) =>
-              item.isDone ? (<TableRow
+              item.isDone ? (
+                <TableRow
                   key={item._id}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
                   <TableCell>{item.content}</TableCell>
                   <TableCell align="right">{item.name}</TableCell>
+                  <TableCell align="right">{item.currClass}</TableCell>
                   <TableCell align="right">
                     <Moment format="lll">{item.createdAt}</Moment>
                   </TableCell>
                   <TableCell align="right">
-                  <Button variant="contained" color="error">Restore</Button>
+                    <Button variant="contained" color="error"
+                    onClick={() => handleCick(item)}
+                    >
+                      Restore
+                    </Button>
                   </TableCell>
-                </TableRow>) : null )}
+                </TableRow>
+              ) : null
+            )}
           </TableBody>
         </Table>
       </TableContainer>

@@ -17,7 +17,6 @@ export default function Home() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console
     navigate('../items')
 
