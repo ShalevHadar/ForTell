@@ -7,6 +7,7 @@ import "@fontsource/roboto/400.css";
 import Home from "./Home";
 import CreatePost from "./CreatePost";
 import Copyright from "./Copyright";
+import Thanks from "./Thanks";
 export default function App() {
   return (
     <div
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/items" element={<Items />} />
           <Route path="/createPost" element={<CreatePost />} />
+          <Route path="/thank" element={<Thanks />} />
         </Routes>
       </BrowserRouter>
       <Copyright />

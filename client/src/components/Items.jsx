@@ -32,7 +32,6 @@ export default function Items() {
   };
 
   const handleCick = (item) => {
-    console.log(item);
     axios.patch(`${URL}/${item._id}`, {item})
     .then(fetchItems()).then(setFlag)
   }

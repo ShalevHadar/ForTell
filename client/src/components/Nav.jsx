@@ -30,6 +30,11 @@ export default function Nav() {
               CreatePost
             </Button>
             </Link>
+            <Link style={{color:"white"}} to="thank">
+            <Button color="inherit" style={{color:"white", textTransform: "none" }}>
+              Thank
+            </Button>
+            </Link>
           </Typography>
         </Toolbar>
       </AppBar>
