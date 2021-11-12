@@ -53,7 +53,7 @@ const createItem = (req,res) => {
                 console.log(err);
             }else {
                 console.log("Succesfully saved all new items to the DB");
-                res.status(201).json({message: 'user created'})
+                res.status(201).json({message: 'item created'})
             }
         })
     } catch (error) {
@@ -75,11 +75,40 @@ const deletePost = (req,res) => {
     })
 }
 
+const updateStatus = (req,res) => {
+    const {id} = req.params;
+    Item.updateOne({_id:id}, {isDone: true}, err => {
+        if(err){
+            res.status(404)
+            console.log(err);
+        }else {
+            console.log("Succesfully update post");
+            res.status(200).json({message: 'Updated status !'})
+        }
+    })
+}
+
+// const deleteAll = (req,res) => {
+//     Item.deleteMany({isDone: true}, err => {
+//         if(err){
+//             console.log(err);
+//         }
+//         else{
+//             console.log("ALL HAVE BEEN DELETED");
+//             res.status(200).json({message: 'HAHA CONSUME'})
+//         }
+//     })
+// }
+
 app.get('/api/items', getAllPost)
 
 app.post('/api/items', createItem)
 
 app.delete('/api/items/:id', deletePost)
+
+app.patch('/api/items/:id', updateStatus)
+
+// app.delete('/api/items', deleteAll)
 
 app.listen(port, () => {
     console.log(`App is running on port: ${port}`);
