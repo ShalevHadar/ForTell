@@ -68,7 +68,7 @@ export default function Items() {
   return (
     <>
       <Typography variant="h4" gutterBottom component="div">
-        Current Tasks
+        Current Requests
       </Typography>
 
       <TableContainer component={Paper}>
@@ -113,7 +113,7 @@ export default function Items() {
       <br />
       <br />
       <Typography variant="h4" gutterBottom component="div">
-        Done Tasks
+        Done Requests
       </Typography>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -161,7 +161,7 @@ export default function Items() {
           size="large"
           onClick={handleClickOpen}
         >
-          Delete all Done Tasks
+          Delete all Done Requests
         </Button>
         <Dialog
           open={open}
@@ -170,7 +170,7 @@ export default function Items() {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {"Are you sure you want to delete all tasks??"}
+            {"Are you sure you want to delete all Requests??"}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">

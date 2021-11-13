@@ -1,14 +1,16 @@
 import { AppBar, Button, Toolbar, Typography } from "@mui/material";
 import React from "react";
 import { Link  } from "react-router-dom";
+import SportsKabaddiIcon from '@mui/icons-material/SportsKabaddi';
 
 export default function Nav() {
   return (
     <div>
-      <AppBar position="fixed" align="center" style={{backgroundColor: '#FFBF86'}}>
+      <AppBar  style={{backgroundColor: '#FFBF86'}}>
         <Toolbar>
-        <Typography>Violence Reporting</Typography>
+        <Typography sx={{pb: 1}}><SportsKabaddiIcon/>  Violence Reporting</Typography>
           <Typography m={2} t={3} variant="h6" color="inherit" noWrap>
+          
           <Link style={{color:"white"}} to="">
             <Button  style={{color:"white", textTransform: "none" }}>
               Home
