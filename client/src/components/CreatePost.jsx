@@ -54,11 +54,11 @@ export default function App() {
             <option value={11}>11th Grade</option>
             <option value={12}>12th Grade</option>
           </select>
-          <select {...register("responsibilityId")} required>
+          <select {...register("teacherName")} required>
             <option value="">Select a Teacher</option>
-            <option value="1">Doron Freeman</option>
-            <option value="2">Itay Yafti</option>
-            <option value="3">Avi Ron</option>
+            <option value="Doron Freeman">Doron Freeman</option>
+            <option value="Itay Yafti">Itay Yafti</option>
+            <option value="Avi Ron">Avi Ron</option>
           </select>
           <textarea
             rows="10"

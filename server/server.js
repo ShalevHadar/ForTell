@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 
 // middlewares
 const app = express();
@@ -26,7 +26,7 @@ mongoose.connect(dbUrl, (err) => {
 
 // create item Schema for mongoose
 const itemSchema = new mongoose.Schema({
-  responsibilityId: Number,
+  teacherName: String,
   name: String,
   currClass: String,
   content: String,
@@ -152,16 +152,16 @@ const createUser = async (req, res) => {
 
   // creating jwt
   const token = jwt.sign(
-      {newUser: newUser._id, email},
-      process.env.TOKEN_KEY,
-      {
-          expiresIn: "2h",
-      }
-  )
+    { newUser: newUser._id, email },
+    process.env.TOKEN_KEY,
+    {
+      expiresIn: "2h",
+    }
+  );
 
   // give user the token :)
   newUser.token = token;
-  
+
   try {
     User.create(newUser, function (err) {
       if (err) {
@@ -177,9 +177,38 @@ const createUser = async (req, res) => {
   }
 };
 
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!(email && password)) {
+      res.status(400).send("All input is required");
+    }
+    const user = await User.findOne({ email });
+    if (user && (await bcrypt.compare(password, user.password))) {
+      // Create token
+      const token = jwt.sign(
+        { user_id: user._id, email },
+        process.env.TOKEN_KEY,
+        {
+          expiresIn: "2h",
+        }
+      );
+      user.token = token;
+      res.status(200).json(user);
+      console.log('User can log');
+    } else {
+        console.log('Password/user not currect.');
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 app.get("/api/users", getAllUsers);
 
 app.post("/api/users", createUser);
+
+app.post("/api/users/login", loginUser);
 
 app.listen(port, () => {
   console.log(`App is running on port: ${port}`);
