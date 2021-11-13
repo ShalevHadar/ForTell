@@ -1,13 +1,17 @@
 import * as React from "react";
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import {  Grid,  Typography } from "@mui/material";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { Button, Grid, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export default function Thank() {
-  const handleSubmit = () => {
-    console.log("yo");
-  };
+  
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate('../createPost');
+  }
+
   return (
-    <form onSubmit={() => handleSubmit()}>
+    <>
       <Grid
         container
         spacing={0}
@@ -16,25 +20,24 @@ export default function Thank() {
         justifyContent="center"
         style={{ minHeight: "50vh" }}
       >
-        <Typography
-          style={{ paddingBottom: "20px" }}
-          variant="h5"
-          gutterBottom
-          component="div"
-        >
+      <Grid item>
+        <Typography style={{ paddingBottom: "20px" }} variant="h5" gutterBottom>
           {<CheckCircleIcon />} Thank you !
         </Typography>
-        <div>
-        <Typography
-          style={{ paddingBottom: "20px" }}
-          variant="h5"
-          gutterBottom
-          component="div"
-        >
-           Your post will be review by the superviser.
-        </Typography>
-        </div>
+        
+          <Typography
+            style={{ paddingBottom: "20px" }}
+            variant="h5"
+            gutterBottom
+          >
+            Your post will be review by the superviser.
+          </Typography>
+          <Button onClick={() => handleClick()}>
+            Post Another Request
+          </Button>
+        
+        </Grid>
       </Grid>
-    </form>
+    </>
   );
 }

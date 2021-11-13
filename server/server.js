@@ -45,7 +45,9 @@ const getAllPost = (req,res) => {
 }
 
 const createItem = (req,res) => {
+    const date = new Date();
     const item = req.body;
+    item.createdAt = date;
     try {
         Item.insertMany(item,function(err) {
             if(err){
@@ -88,17 +90,17 @@ const updateStatus = (req,res) => {
     })
 }
 
-// const deleteAll = (req,res) => {
-//     Item.deleteMany({isDone: true}, err => {
-//         if(err){
-//             console.log(err);
-//         }
-//         else{
-//             console.log("ALL HAVE BEEN DELETED");
-//             res.status(200).json({message: 'HAHA CONSUME'})
-//         }
-//     })
-// }
+const deleteAll = (req,res) => {
+    Item.deleteMany({isDone: true}, err => {
+        if(err){
+            console.log(err);
+        }
+        else{
+            console.log("ALL HAVE BEEN DELETED");
+            res.status(200).json({message: 'HAHA CONSUME'})
+        }
+    })
+}
 
 app.get('/api/items', getAllPost)
 
@@ -108,7 +110,7 @@ app.delete('/api/items/:id', deletePost)
 
 app.patch('/api/items/:id', updateStatus)
 
-// app.delete('/api/items', deleteAll)
+app.delete('/api/items', deleteAll)
 
 app.listen(port, () => {
     console.log(`App is running on port: ${port}`);

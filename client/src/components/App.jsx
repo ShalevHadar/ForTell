@@ -6,7 +6,6 @@ import Login from "./Login";
 import "@fontsource/roboto/400.css";
 import Home from "./Home";
 import CreatePost from "./CreatePost";
-import Copyright from "./Copyright";
 import Thanks from "./Thanks";
 export default function App() {
   return (
@@ -28,7 +27,6 @@ export default function App() {
           <Route path="/thank" element={<Thanks />} />
         </Routes>
       </BrowserRouter>
-      <Copyright />
     </div>
   );
 }

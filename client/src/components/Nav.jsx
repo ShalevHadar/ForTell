@@ -7,6 +7,7 @@ export default function Nav() {
     <div>
       <AppBar position="fixed" align="center" style={{backgroundColor: '#FFBF86'}}>
         <Toolbar>
+        <Typography>Violence Reporting</Typography>
           <Typography m={2} t={3} variant="h6" color="inherit" noWrap>
           <Link style={{color:"white"}} to="">
             <Button  style={{color:"white", textTransform: "none" }}>

@@ -2,6 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Paper,
   Table,
   TableBody,
@@ -12,12 +17,30 @@ import {
   Typography,
 } from "@mui/material";
 import Moment from "react-moment";
+import { Box } from "@mui/system";
 
 const URL = `http://localhost:3030/api/items`;
 
 export default function Items() {
+  const [open, setOpen] = React.useState(false);
   const [items, setItems] = useState([]);
   const [flag, setFlag] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (e) => {
+    setOpen(false);
+  };
+
+  const deleteAll = () => {
+    axios
+      .delete(URL)
+      .catch((e) => console.log(e.message))
+      .then(console.log("all was deleted"))
+      .then(setFlag);
+  };
 
   const fetchItems = () => {
     axios
@@ -32,9 +55,11 @@ export default function Items() {
   };
 
   const handleCick = (item) => {
-    axios.patch(`${URL}/${item._id}`, {item})
-    .then(fetchItems()).then(setFlag)
-  }
+    axios
+      .patch(`${URL}/${item._id}`, { item })
+      .then(fetchItems())
+      .then(setFlag);
+  };
 
   useEffect(() => {
     fetchItems();
@@ -71,8 +96,10 @@ export default function Items() {
                     <Moment format="lll">{item.createdAt}</Moment>
                   </TableCell>
                   <TableCell align="right">
-                    <Button variant="contained" color="success"
-                    onClick={() => handleCick(item)}
+                    <Button
+                      variant="contained"
+                      color="success"
+                      onClick={() => handleCick(item)}
                     >
                       Done
                     </Button>
@@ -113,8 +140,10 @@ export default function Items() {
                     <Moment format="lll">{item.createdAt}</Moment>
                   </TableCell>
                   <TableCell align="right">
-                    <Button variant="contained" color="error"
-                    onClick={() => handleCick(item)}
+                    <Button
+                      variant="contained"
+                      style={{ backgroundColor: "#6166B3" }}
+                      onClick={() => handleCick(item)}
                     >
                       Restore
                     </Button>
@@ -125,6 +154,45 @@ export default function Items() {
           </TableBody>
         </Table>
       </TableContainer>
+      <Box sx={{ mx: "auto", p: 1, m: 1, mt: 2, textAlign: "center" }}>
+        <Button
+          variant="contained"
+          color="error"
+          size="large"
+          onClick={handleClickOpen}
+        >
+          Delete all Done Tasks
+        </Button>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Are you sure you want to delete all tasks??"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              If you will decide to delete all task, the action cannot be
+              reveresed ! be carefull before using this option.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Disagree</Button>
+            <Button
+              onClick={() => {
+                handleClose();
+                deleteAll();
+              }}
+              autoFocus
+            >
+              Agree
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Box>
+
       <br />
       <br />
     </>
