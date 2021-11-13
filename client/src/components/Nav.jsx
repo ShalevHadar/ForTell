@@ -16,9 +16,14 @@ export default function Nav() {
               Home
             </Button>
             </Link>
+            <Link style={{color:"white"}} to="register">
+            <Button  style={{color:"white", textTransform: "none" }}
+            >
+              Register
+            </Button>
+            </Link>
             <Link style={{color:"white"}} to="login">
             <Button  style={{color:"white", textTransform: "none" }}
-  
             >
               Login
             </Button>

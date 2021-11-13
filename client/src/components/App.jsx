@@ -7,6 +7,7 @@ import "@fontsource/roboto/400.css";
 import Home from "./Home";
 import CreatePost from "./CreatePost";
 import Thanks from "./Thanks";
+import Register from "./Register";
 export default function App() {
   return (
     <div
@@ -21,6 +22,7 @@ export default function App() {
         <Nav />
         <Routes>
         <Route path="" element={<Home />} />
+        <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/items" element={<Items />} />
           <Route path="/createPost" element={<CreatePost />} />

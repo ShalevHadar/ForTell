@@ -8,3 +8,4 @@ To use:
 
 Write : npm install in root folders
 Create: .env file with MongoDB key with the name : 'DB_PASS' and 'PORT' number.
+
