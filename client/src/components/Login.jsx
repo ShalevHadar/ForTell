@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -25,8 +25,10 @@ export default function Home() {
     axios
       .post(URL, { email: data.get("email"), password: data.get("password") })
       .then((res) => {if (!res.data){
-        
+        console.log(res.data);
       } else {
+        const token = res.data.token;
+        document.cookie = `token=${token}`
         navigate('../items')
       }})
       .catch((error) => console.log(error.massage));

@@ -4,12 +4,20 @@ const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const cookieParser = require('cookie-parser')
+const auth = require("./auth");
+
+// middleware function
+
 
 // middlewares
 const app = express();
 dotenv.config();
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser())
+
+
 
 // environments vars
 const port = process.env.PORT;
@@ -39,18 +47,17 @@ const itemSchema = new mongoose.Schema({
 
 const Item = mongoose.model("Item", itemSchema);
 
+
 // create user Schema for mongoose
 
 const userSchema = new mongoose.Schema({
   first_name: { type: String, default: null },
   email: { type: String, unique: true },
   password: { type: String },
-  token: { type: String },
+
 });
 
 const User = mongoose.model("user", userSchema);
-
-// posts @@ //
 
 const getAllPost = async (req, res) => {
   Item.find({}, (err, items) => {
@@ -116,13 +123,13 @@ const deleteAll = async (req, res) => {
   });
 };
 
-app.get("/api/items", getAllPost);
+app.get("/api/items",auth, getAllPost);
 
 app.post("/api/items", createItem);
 
-app.delete("/api/items/:id", deletePost);
+app.delete("/api/items/:id",deletePost);
 
-app.patch("/api/items/:id", updateStatus);
+app.patch("/api/items/:id",auth, updateStatus);
 
 app.delete("/api/items", deleteAll);
 
@@ -138,7 +145,8 @@ const getAllUsers = (req, res) => {
   });
 };
 
-const createUser = async (req, res) => {
+const registerUser = async (req, res) => {
+  try {
   // destructoring variables
   const { first_name, email, password } = req.body;
   // hashing pass
@@ -150,33 +158,35 @@ const createUser = async (req, res) => {
     password: encryptedPassword,
   });
 
-  // creating jwt
-  const token = jwt.sign(
-    { newUser: newUser._id, email },
-    process.env.TOKEN_KEY,
-    {
-      expiresIn: "2h",
+  User.create(newUser, function (err) {
+    if (err) {
+      res.status(500);
+      console.log(err);
+    } else {
+      console.log("Succesfully saved new user to the DB");
+      res.status(201).json({ message: "User created" });
     }
-  );
+  });
+
+  // // creating token
+  // const token = jwt.sign(
+  //   { sub: newUser._id, email },
+  //   process.env.TOKEN_KEY,
+  //   {
+  //     expiresIn: "2h",
+  //   },
+  //   {httpOnly: true}
+  // );
 
   // give user the token :)
-  newUser.token = token;
-
-  try {
-    User.create(newUser, function (err) {
-      if (err) {
-        res.status(503);
-        console.log(err);
-      } else {
-        console.log("Succesfully saved all new items to the DB");
-        res.status(201).json({ message: "item created" });
-      }
-    });
+  // newUser.token = token;
+    
   } catch (error) {
     console.log(error.message);
   }
 };
 
+// creating token
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -185,28 +195,31 @@ const loginUser = async (req, res) => {
     }
     const user = await User.findOne({ email });
     if (user && (await bcrypt.compare(password, user.password))) {
+      
       // Create token
       const token = jwt.sign(
-        { user_id: user._id, email },
+        { sub: user._id, email, name: user.first_name},
         process.env.TOKEN_KEY,
         {
           expiresIn: "2h",
-        }
+        },
+        {httpOnly:true}
       );
-      user.token = token;
-      res.status(200).json(user);
+      
       console.log('User can log');
+      res.status(200).json({token})
     } else {
         console.log('Password/user not currect.');
     }
   } catch (err) {
+    res.status(500).send("cannot login for somereason")
     console.log(err);
   }
 };
 
-app.get("/api/users", getAllUsers);
+app.get("/api/users",auth, getAllUsers);
 
-app.post("/api/users", createUser);
+app.post("/api/users/register", registerUser);
 
 app.post("/api/users/login", loginUser);
 

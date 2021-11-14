@@ -7,7 +7,7 @@ import Container from "@mui/material/Container";
 import AccessibilityIcon from "@mui/icons-material/Accessibility";
 import { Box } from "@mui/system";
 import CssBaseline from "@mui/material/CssBaseline";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 const validationSchema = yup.object({
@@ -23,9 +23,9 @@ const validationSchema = yup.object({
 
 export default function Register() {
 
-    const URL = `http://localhost:3030/api/users`;
+    const URL = `http://localhost:3030/api/users/register`;
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     
   const formik = useFormik({
     initialValues: {

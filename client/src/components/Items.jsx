@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import {
   Button,
@@ -18,10 +18,14 @@ import {
 } from "@mui/material";
 import Moment from "react-moment";
 import { Box } from "@mui/system";
+import {useCookies} from 'react-cookie'
+
 
 const URL = `http://localhost:3030/api/items`;
 
 export default function Items() {
+  const [cookies, , ] = useCookies(["token"]);
+
   const [open, setOpen] = React.useState(false);
   const [items, setItems] = useState([]);
   const [flag, setFlag] = useState(false);
@@ -42,28 +46,30 @@ export default function Items() {
       .then(setFlag);
   };
 
-  const fetchItems = () => {
+  const fetchItems = useCallback(() => {
     axios
       .get(URL, {
         validateStatus: (status) => {
           return status < 400;
         },
+        headers:{"x-access-token": cookies.token},
       })
       .then((res) => {
         setItems(res.data);
-      });
-  };
+      })
+      .catch((e) => console.log(e.message));
+  }, [cookies.token]);
 
   const handleCick = (item) => {
     axios
-      .patch(`${URL}/${item._id}`, { item })
+      .patch(`${URL}/${item._id}`, { item}, {headers:{"x-access-token": cookies.token}})
       .then(fetchItems())
       .then(setFlag);
   };
 
   useEffect(() => {
     fetchItems();
-  }, [flag]);
+  }, [fetchItems, flag]);
 
   return (
     <>
