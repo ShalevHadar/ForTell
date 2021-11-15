@@ -3,13 +3,15 @@ import React from "react";
 import { Link } from "react-router-dom";
 import SportsKabaddiIcon from "@mui/icons-material/SportsKabaddi";
 import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
 export default function Nav() {
   const [, , removeCookie] = useCookies();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     removeCookie("token");
-
+    navigate('./')
   };
 
   return (
