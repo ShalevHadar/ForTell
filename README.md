@@ -8,4 +8,13 @@ To use:
 
 Write : npm install in root folders
 Create: .env file with MongoDB key with the name : 'DB_PASS' and 'PORT' number.
+## home page
+![demo:](https://i.ibb.co/9TXJBK3/home.png)
+
+## create Post (student)
+![demo:](https://i.ibb.co/tQNFd3L/Create-Post.png)
+
+## items (teacher)
+![demo:](https://i.ibb.co/KmymJGQ/Items.png)
+
 
