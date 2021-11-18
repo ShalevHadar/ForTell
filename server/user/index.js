@@ -1,5 +1,5 @@
 import { UserModel, userSchema } from './user-model';
-import * as User from './user';
+import User from './user';
 
 export {
   userSchema,

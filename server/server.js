@@ -1,29 +1,25 @@
+// import all required dependencies for the software to run
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const express = require("express");
 const cors = require("cors");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const cookieParser = require('cookie-parser')
-const auth = require("./auth");
+const { User } = require("./user");
+const { Token, verifyTokenMiddleware } = require("./token");
 
-// middleware function
-
-
-// middlewares
-const app = express();
+// initialize environment configuration
 dotenv.config();
+const port = process.env.PORT;
+const dbUrl = process.env.DB_PASS;
+
+// setup http middleware
+const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser())
 
 
-
-// environments vars
-const port = process.env.PORT;
-const dbUrl = process.env.DB_PASS;
-
-// checking connection to DB
+// create connection to db
 mongoose.connect(dbUrl, (err) => {
   if (err) {
     console.log("Connection to DB fail");
@@ -32,7 +28,7 @@ mongoose.connect(dbUrl, (err) => {
   }
 });
 
-// create item Schema for mongoose
+// define item db schema
 const itemSchema = new mongoose.Schema({
   teacherName: String,
   name: String,
@@ -45,20 +41,14 @@ const itemSchema = new mongoose.Schema({
   },
 });
 
+// define item db model
 const Item = mongoose.model("Item", itemSchema);
 
 
-// create user Schema for mongoose
+// handler – handle http communication (get data from http request, return http response)
 
-const userSchema = new mongoose.Schema({
-  first_name: { type: String, default: null },
-  email: { type: String, unique: true },
-  password: { type: String },
-
-});
-
-const User = mongoose.model("user", userSchema);
-
+// handle http communication
+// query db + handle db errors
 const getAllPost = async (req, res) => {
   Item.find({}, (err, items) => {
     if (err) {
@@ -69,26 +59,32 @@ const getAllPost = async (req, res) => {
   });
 };
 
+// handle http communication
+// define item object
+// query db + handle db errors
 const createItem = async (req, res) => {
+
+  // define item object
   const date = new Date();
   const item = req.body;
   item.createdAt = date;
-  try {
-    Item.insertMany(item, function (err) {
-      if (err) {
-        res.status(503);
-        console.log(err);
-      } else {
-        console.log("Succesfully saved all new items to the DB");
-        res.status(201).json({ message: "item created" });
-      }
-    });
-  } catch (error) {}
+
+  Item.insertMany(item, function (err) {
+    if (err) {
+      res.status(503);
+      console.log(err);
+    } else {
+      console.log("Succesfully saved all new items to the DB");
+      res.status(201).json({ message: "item created" });
+    }
+  });
 };
 
+// handle http communication
+// query db + handle db error
 const deletePost = async (req, res) => {
   const { id } = req.params;
-  Item.deleteOne({}, function (err) {
+  Item.deleteOne({ id }, function (err) {
     if (err) {
       res.status(404);
       console.log(err);
@@ -99,9 +95,12 @@ const deletePost = async (req, res) => {
   });
 };
 
+// handle http communication
+// query db + handle db error
 const updateStatus = async (req, res) => {
   const { id } = req.params;
-  Item.updateOne({ _id: id }, { isDone: !req.body.item.isDone }, (err) => {
+  const isDone = !req.body.item.isDone;
+  Item.updateOne({ _id: id }, { isDone }, (err) => {
     if (err) {
       res.status(404);
       console.log(err);
@@ -112,6 +111,8 @@ const updateStatus = async (req, res) => {
   });
 };
 
+// handle http communication
+// query db + handle errors
 const deleteAll = async (req, res) => {
   Item.deleteMany({ isDone: true }, (err) => {
     if (err) {
@@ -123,19 +124,26 @@ const deleteAll = async (req, res) => {
   });
 };
 
-app.get("/api/items",auth, getAllPost);
-
+// define item routes
+app.get("/api/items", verifyTokenMiddleware, getAllPost);
 app.post("/api/items", createItem);
-
-app.delete("/api/items/:id",deletePost);
-
-app.patch("/api/items/:id",auth, updateStatus);
-
+app.delete("/api/items/:id", deletePost);
+app.patch("/api/items/:id", verifyTokenMiddleware, updateStatus);
 app.delete("/api/items", deleteAll);
 
 // users !! @@ //
 
+// handle http communication
 const getAllUsers = (req, res) => {
+  try {
+    const data = await User.findAll();
+    res.status(200).json(data);
+  } catch (error) {
+    // handle catch
+    res.status(500).json({
+      message: error.message
+    });
+  }
   User.find({}, (err, items) => {
     if (err) {
       console.log(err);
@@ -145,84 +153,49 @@ const getAllUsers = (req, res) => {
   });
 };
 
+// handle http communication
 const registerUser = async (req, res) => {
   try {
-  // destructoring variables
-  const { first_name, email, password } = req.body;
-  // hashing pass
-  encryptedPassword = await bcrypt.hash(password, 10);
-  // creating new user with hashed password
-  const newUser = new User({
-    first_name,
-    email: email.toLowerCase(),
-    password: encryptedPassword,
-  });
-
-  User.create(newUser, function (err) {
-    if (err) {
-      res.status(500);
-      console.log(err);
-    } else {
-      console.log("Succesfully saved new user to the DB");
-      res.status(201).json({ message: "User created" });
-    }
-  });
-
-  // // creating token
-  // const token = jwt.sign(
-  //   { sub: newUser._id, email },
-  //   process.env.TOKEN_KEY,
-  //   {
-  //     expiresIn: "2h",
-  //   },
-  //   {httpOnly: true}
-  // );
-
-  // give user the token :)
-  // newUser.token = token;
-    
+    // destructoring variables
+    const { first_name, email, password } = req.body;
+    await User.create({
+      email,
+      password,
+      first_name,
+    });
+    res.status(201).json({ message: "User created" });
   } catch (error) {
     console.log(error.message);
+    res.status(500);
   }
 };
 
-// creating token
+// handle http communication
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!(email && password)) {
       res.status(400).send("All input is required");
     }
-    const user = await User.findOne({ email });
-    if (user && (await bcrypt.compare(password, user.password))) {
-      
-      // Create token
-      const token = jwt.sign(
-        { sub: user._id, email, name: user.first_name},
-        process.env.TOKEN_KEY,
-        {
-          expiresIn: "2h",
-        },
-        {httpOnly:true}
-      );
-      
-      console.log('User can log');
-      res.status(200).json({token})
-    } else {
-        console.log('Password/user not currect.');
-    }
+
+    const user = await User
+      .findUserByCredentials(email, password);
+    const token = Token.create(user._id, user.email, {
+      first_name: user.first_name
+    });
+    res.status(200).json({ token })
   } catch (err) {
-    res.status(500).send("cannot login for somereason")
+    res.status(401).send(err.message)
     console.log(err);
   }
 };
 
-app.get("/api/users",auth, getAllUsers);
-
+// define user routes
+app.get("/api/users", verifyTokenMiddleware, getAllUsers);
 app.post("/api/users/register", registerUser);
-
 app.post("/api/users/login", loginUser);
 
+// initialize server
 app.listen(port, () => {
   console.log(`App is running on port: ${port}`);
 });

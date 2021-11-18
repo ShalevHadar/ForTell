@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-async function create(id, email, attributes) {
+function create(id, email, attributes = {}) {
   const payload = {
     sub: id,
     email: email,
@@ -13,6 +13,6 @@ async function create(id, email, attributes) {
   });
 }
 
-export {
+export default {
   create,
 }

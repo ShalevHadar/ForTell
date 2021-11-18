@@ -1,7 +1,10 @@
+// responsibility – query user db
+
 import bcrypt from 'bcryptjs';
 import { UserModel } from "./user-model";
 
-export async function create(attributes) {
+// save new user to db
+async function create(attributes) {
   const encryptedPassword = await bcrypt.hash(password, 10);
   const document = {
     email: attributes.email,
@@ -12,7 +15,7 @@ export async function create(attributes) {
   return UserModel.create(document);
 }
 
-export async function findAll() {
+async function findAll() {
   return new Promise((resolve, reject) => {
     UserModel.find({})
       .then(users => resolve(users))
@@ -20,7 +23,7 @@ export async function findAll() {
   })
 }
 
-export async function findByEmail(email) {
+async function findByEmail(email) {
   return new Promise((resolve, reject) => {
     UserModel.findOne({ email })
       .then(user => resolve(user))
@@ -28,7 +31,25 @@ export async function findByEmail(email) {
   });
 }
 
-export async function checkCredentials(email, password) {
+async function findUserByCredentials(email, password) {
   const user = await findByEmail(email);
-  return bcrypt.compare(password, user.password);
+
+  if(!user) {
+    throw new Error("There is no user with such email");
+  }
+
+  const match = bcrypt.compare(password, user.password);
+
+  if(!match) {
+    throw new Error("Wrong password");
+  }
+
+  return user; 
+}
+
+export default {
+  create,
+  findAll,
+  findByEmail,
+  findUserByCredentials,
 }
