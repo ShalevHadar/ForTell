@@ -13,6 +13,6 @@ function create(id, email, attributes = {}) {
   });
 }
 
-export default {
+module.exports = {
   create,
 }

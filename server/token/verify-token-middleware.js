@@ -21,4 +21,4 @@ const verifyTokenMiddleware = (req, res, next) => {
   }
 };
 
-export default verifyTokenMiddleware;
+module.exports = verifyTokenMiddleware;

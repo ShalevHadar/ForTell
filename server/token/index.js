@@ -1,7 +1,7 @@
-import Token from './token';
-import verifyTokenMiddleware from './verify-token-middleware';
+const Token = require('./token');
+const verifyTokenMiddleware = require('./verify-token-middleware');
 
-export {
+module.exports = {
   Token,
   verifyTokenMiddleware,
 }

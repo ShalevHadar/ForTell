@@ -1,7 +1,5 @@
-// responsibility – query user db
-
-import bcrypt from 'bcryptjs';
-import { UserModel } from "./user-model";
+const bcrypt = require('bcryptjs');
+const { UserModel } = require('./user-model');
 
 // save new user to db
 async function create(attributes) {
@@ -47,7 +45,7 @@ async function findUserByCredentials(email, password) {
   return user; 
 }
 
-export default {
+module.exports = {
   create,
   findAll,
   findByEmail,

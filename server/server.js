@@ -134,7 +134,7 @@ app.delete("/api/items", deleteAll);
 // users !! @@ //
 
 // handle http communication
-const getAllUsers = (req, res) => {
+const getAllUsers = async (req, res) => {
   try {
     const data = await User.findAll();
     res.status(200).json(data);

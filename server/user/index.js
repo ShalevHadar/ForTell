@@ -1,7 +1,7 @@
-import { UserModel, userSchema } from './user-model';
-import User from './user';
+const { UserModel, userSchema } = require('./user-model');
+const User = require('./user');
 
-export {
+module.exports = {
   userSchema,
   UserModel,
   User,
