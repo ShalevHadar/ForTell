@@ -62,7 +62,7 @@ export default function Items() {
 
   const handleCick = (item) => {
     axios
-      .patch(`${URL}/${item._id}`, { item}, {headers:{"x-access-token": cookies.token}})
+      .patch(`${URL}/${item._id}/status`, { item}, {headers:{"x-access-token": cookies.token}})
       .then(fetchItems())
       .then(setFlag);
   };

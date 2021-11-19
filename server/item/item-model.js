@@ -2,7 +2,7 @@
 const mongoose = require("mongoose");
 
 // creating schema
-const itemSchema = new item.Schema({
+const itemSchema = new mongoose.Schema({
   teacherName: String,
   name: String,
   currClass: String,
@@ -19,6 +19,5 @@ const itemModel = mongoose.model("Item", itemSchema);
 
 // exporting the model and schema:
 module.exports = {
-    itemSchema,
     itemModel,
 }
