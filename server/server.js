@@ -5,6 +5,7 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require('cookie-parser')
 const { User } = require("./user");
+const { Item } = require("./items")
 const { Token, verifyTokenMiddleware } = require("./token");
 
 // initialize environment configuration
@@ -28,24 +29,6 @@ mongoose.connect(dbUrl, (err) => {
     console.log("Connection to DB succefful");
   }
 });
-
-// define item db schema
-const itemSchema = new mongoose.Schema({
-  teacherName: String,
-  name: String,
-  currClass: String,
-  content: String,
-  createdAt: Date,
-  isDone: {
-    type: Boolean,
-    default: false,
-  },
-});
-
-// define item db model
-const Item = mongoose.model("Item", itemSchema);
-
-
 // handler – handle http communication (get data from http request, return http response)
 
 // handle http communication

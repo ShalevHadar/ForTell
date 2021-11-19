@@ -15,10 +15,10 @@ const itemSchema = new item.Schema({
 });
 
 // creating model
-const ItemModel = mongoose.model("Item", itemSchema);
+const itemModel = mongoose.model("Item", itemSchema);
 
 // exporting the model and schema:
 module.exports = {
     itemSchema,
-    ItemModel,
+    itemModel,
 }
