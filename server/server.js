@@ -23,6 +23,7 @@ app.use(cookieParser())
 mongoose.connect(dbUrl, (err) => {
   if (err) {
     console.log("Connection to DB fail");
+    console.error(err);
   } else {
     console.log("Connection to DB succefful");
   }
@@ -144,13 +145,6 @@ const getAllUsers = async (req, res) => {
       message: error.message
     });
   }
-  User.find({}, (err, items) => {
-    if (err) {
-      console.log(err);
-    } else {
-      res.json(items);
-    }
-  });
 };
 
 // handle http communication
@@ -165,7 +159,7 @@ const registerUser = async (req, res) => {
     });
     res.status(201).json({ message: "User created" });
   } catch (error) {
-    console.log(error.message);
+    console.error(error);
     res.status(500);
   }
 };

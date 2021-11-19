@@ -3,7 +3,7 @@ const { UserModel } = require('./user-model');
 
 // save new user to db
 async function create(attributes) {
-  const encryptedPassword = await bcrypt.hash(password, 10);
+  const encryptedPassword = await bcrypt.hash(attributes.password, 10);
   const document = {
     email: attributes.email,
     password: encryptedPassword,
