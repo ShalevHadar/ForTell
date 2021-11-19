@@ -19,25 +19,14 @@ app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 
-// create connection to db
-mongoose.connect(dbUrl, (err) => {
-  if (err) {
-    console.log("Connection to DB fail");
-    console.error(err);
-  } else {
-    console.log("Connection to DB succefful");
-  }
-});
-
-// handle http communication
-const getAllItems = async (req, res) => {
+// handle http communication - handle errors
+const getAllItems = async (req, res, next) => {
   try {
     const items = await Item.findAll();
     res.status(200).json(items);
   } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
+    next(error);
+    // handleError(error, res, 500);
   }
 };
 
@@ -48,10 +37,7 @@ const createItem = async (req, res) => {
     const persistedItem = await Item.create(item);
     res.status(201).json({ item: persistedItem });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: error.message,
-    });
+    next(error);
   }
 };
 
@@ -62,10 +48,7 @@ const removeItem = async (req, res) => {
     await Item.removeById(id);
     res.status(202).json();
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: error.message,
-    });
+    next(error);
   }
 };
 
@@ -76,10 +59,7 @@ const toggleItemStatus = async (req, res) => {
     await Item.toggleStatusById(id);
     res.status(204).json();
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: error.message,
-    });
+    next(error);
   }
 };
 
@@ -89,10 +69,7 @@ const removeAllItems = async (req, res) => {
     Item.removeAllByStatus(true);
     res.status(202).json();
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: error.message,
-    });
+    next(error);
   }
 };
 
@@ -110,9 +87,7 @@ const getAllUsers = async (req, res) => {
     res.status(200).json(data);
   } catch (error) {
     // handle catch
-    res.status(500).json({
-      message: error.message,
-    });
+    next(error);
   }
 };
 
@@ -128,10 +103,7 @@ const registerUser = async (req, res) => {
     });
     res.status(201).json({ message: "User created" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: error.message,
-    });
+    next(error);
   }
 };
 
@@ -140,7 +112,9 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!(email && password)) {
-      res.status(400).send("All input is required");
+      const error = new Error("All input is required");
+      error.status = 400;
+      throw error;
     }
 
     const user = await User.findUserByCredentials(email, password);
@@ -148,9 +122,11 @@ const loginUser = async (req, res) => {
       first_name: user.first_name,
     });
     res.status(200).json({ token });
-  } catch (err) {
-    res.status(401).send(err.message);
-    console.log(err);
+  } catch (error) {
+    if (!error.status) {
+      error.status = 401;
+    }
+    next(error);
   }
 };
 
@@ -159,7 +135,27 @@ app.get("/api/users", verifyTokenMiddleware, getAllUsers);
 app.post("/api/users/register", registerUser);
 app.post("/api/users/login", loginUser);
 
-// initialize server
-app.listen(port, () => {
-  console.log(`App is running on port: ${port}`);
+const handleErrorMiddleware = (error, req, res, next) => {
+  console.error(error);
+  if (!error.status) {
+    error.status = 500;
+  }
+  res.status(error.status).json({
+    message: error.message,
+  });
+};
+
+app.use(handleErrorMiddleware);
+
+// create connection to db
+mongoose.connect(dbUrl, (err) => {
+  if (err) {
+    console.log("Connection to DB fail");
+    console.error(err);
+  } else {
+    console.log("Connection to DB succefful");
+    app.listen(port, () => {
+      console.log(`App is running on port: ${port}`);
+    });
+  }
 });
