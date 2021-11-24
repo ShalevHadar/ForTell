@@ -4,10 +4,6 @@ import Nav from "./Nav";
 import Items from "./Items";
 import Login from "./Login";
 import "@fontsource/roboto/400.css";
-import Home from "./Home";
-import CreatePost from "./CreatePost";
-import Thanks from "./Thanks";
-import Register from "./Register";
 
 export default function App() {
   return (
@@ -22,12 +18,8 @@ export default function App() {
       <BrowserRouter>
         <Nav />
         <Routes>
-        <Route path="" element={<Home />} />
-        <Route  path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="" element={<Login />} />
           <Route path="/items" element={<Items />} />
-          <Route path="/createPost" element={<CreatePost />} />
-          <Route path="/thank" element={<Thanks />} />
         </Routes>
       </BrowserRouter>
     </div>

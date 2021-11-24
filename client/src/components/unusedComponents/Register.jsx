@@ -80,6 +80,15 @@ export default function Register() {
                 <TextField
                 style={{marginTop: "15px"}}
                   fullWidth
+                  id="last_name"
+                  name="last_name"
+                  label="Last Name"
+                  value={formik.values.name}
+                  onChange={formik.handleChange}
+                />
+                <TextField
+                style={{marginTop: "15px"}}
+                  fullWidth
                   id="email"
                   name="email"
                   label="Email"

@@ -24,16 +24,6 @@ export default function Nav() {
           <Typography m={2} t={3} variant="h6" color="inherit" noWrap>
             <Link style={{ color: "white" }} to="">
               <Button style={{ color: "white", textTransform: "none" }}>
-                Home
-              </Button>
-            </Link>
-            <Link style={{ color: "white" }} to="register">
-              <Button style={{ color: "white", textTransform: "none" }}>
-                Register
-              </Button>
-            </Link>
-            <Link style={{ color: "white" }} to="login">
-              <Button style={{ color: "white", textTransform: "none" }}>
                 Login
               </Button>
             </Link>
@@ -45,24 +35,9 @@ export default function Nav() {
                 Items
               </Button>
             </Link>
-            <Link style={{ color: "white" }} to="createPost">
-              <Button
-                color="inherit"
-                style={{ color: "white", textTransform: "none" }}
-              >
-                CreatePost
-              </Button>
-            </Link>
-            <Link style={{ color: "white" }} to="thank">
-              <Button
-                color="inherit"
-                style={{ color: "white", textTransform: "none" }}
-              >
-                Thank
-              </Button>
-            </Link>
+           
           </Typography>
-          <Typography align="right">Hello</Typography>
+          
           {/* help */}
           <Button style={{ float: "right" }} onClick={() => handleLogout()}>
             LogOut
