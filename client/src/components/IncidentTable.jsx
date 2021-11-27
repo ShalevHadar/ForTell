@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import Moment from "react-moment";
 
-// now it's working v2
+// now it's working v3
 export function IncidentTable({
   items,
   handleItemClick,
