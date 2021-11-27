@@ -18,19 +18,20 @@ export default function Home() {
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
+    
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    
     axios
       .post(URL, { email: data.get("email"), password: data.get("password") })
-      .then((res) => {if (!res.data){
-        console.log(res.data);
-      } else {
-        const token = res.data.token;
-        document.cookie = `token=${token}`
-        navigate('../items')
-      }})
+      .then((res) => {
+        if (!res.data) {
+          console.log(res.data);
+        } else {
+          const token = res.data.token;
+          document.cookie = `token=${token}`;
+          navigate("../items");
+        }
+      })
       .catch((error) => console.log(error.massage));
   };
   return (

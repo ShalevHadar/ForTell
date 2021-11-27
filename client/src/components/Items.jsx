@@ -18,13 +18,13 @@ import {
 } from "@mui/material";
 import Moment from "react-moment";
 import { Box } from "@mui/system";
-import {useCookies} from 'react-cookie'
-
+import { useCookies } from "react-cookie";
+import { IncidentTable } from "./IncidentTable";
 
 const URL = `http://localhost:3030/api/items`;
 
 export default function Items() {
-  const [cookies, , ] = useCookies(["token"]);
+  const [cookies, ,] = useCookies(["token"]);
 
   const [open, setOpen] = React.useState(false);
   const [items, setItems] = useState([]);
@@ -52,7 +52,7 @@ export default function Items() {
         validateStatus: (status) => {
           return status < 400;
         },
-        headers:{"x-access-token": cookies.token},
+        headers: { "x-access-token": cookies.token },
       })
       .then((res) => {
         setItems(res.data);
@@ -60,9 +60,13 @@ export default function Items() {
       .catch((e) => console.log(e.message));
   }, [cookies.token]);
 
-  const handleCick = (item) => {
+  const handleClick = (item) => {
     axios
-      .patch(`${URL}/${item._id}/status`, { item}, {headers:{"x-access-token": cookies.token}})
+      .patch(
+        `${URL}/${item._id}/status`,
+        { item },
+        { headers: { "x-access-token": cookies.token } }
+      )
       .then(fetchItems())
       .then(setFlag);
   };
@@ -73,93 +77,24 @@ export default function Items() {
 
   return (
     <>
-      <Typography variant="h4" gutterBottom component="div">
-        Current Requests
-      </Typography>
+      <IncidentTable
+        items={items.filter((item) => item.isDone === false)}
+        handleItemClick={handleClick}
+        title="Pending Incidents"
+        btnLabel="done"
+      />
 
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Cotent</TableCell>
-              <TableCell align="right">Name</TableCell>
-              <TableCell align="right">Class</TableCell>
-              <TableCell align="right">Created At</TableCell>
-              <TableCell align="right">Status</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {items.map((item) =>
-              item.isDone ? null : (
-                <TableRow
-                  key={item._id}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell>{item.content}</TableCell>
-                  <TableCell align="right">{item.name}</TableCell>
-                  <TableCell align="right">{item.currClass}</TableCell>
-                  <TableCell align="right">
-                    <Moment format="lll">{item.createdAt}</Moment>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Button
-                      variant="contained"
-                      color="success"
-                      onClick={() => handleCick(item)}
-                    >
-                      Done
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              )
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
       <br />
       <br />
-      <Typography variant="h4" gutterBottom component="div">
-        Done Requests
-      </Typography>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Cotent</TableCell>
-              <TableCell align="right">Name</TableCell>
-              <TableCell align="right">Class</TableCell>
-              <TableCell align="right">Created At</TableCell>
-              <TableCell align="right">Status</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {items.map((item) =>
-              item.isDone ? (
-                <TableRow
-                  key={item._id}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell>{item.content}</TableCell>
-                  <TableCell align="right">{item.name}</TableCell>
-                  <TableCell align="right">{item.currClass}</TableCell>
-                  <TableCell align="right">
-                    <Moment format="lll">{item.createdAt}</Moment>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Button
-                      variant="contained"
-                      style={{ backgroundColor: "#6166B3" }}
-                      onClick={() => handleCick(item)}
-                    >
-                      Restore
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ) : null
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+
+      <IncidentTable
+        items={items.filter((item) => item.isDone === true)}
+        handleItemClick={handleClick}
+        title="Completed Incidents"
+        btnLabel="restore"
+        btnColor="secondary"
+      />
+
       <Box sx={{ mx: "auto", p: 1, m: 1, mt: 2, textAlign: "center" }}>
         <Button
           variant="contained"
@@ -204,3 +139,5 @@ export default function Items() {
     </>
   );
 }
+
+//item.isDone ? true : false;

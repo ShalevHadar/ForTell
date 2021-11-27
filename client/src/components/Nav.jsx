@@ -11,7 +11,7 @@ export default function Nav() {
 
   const handleLogout = () => {
     removeCookie("token");
-    navigate('./')
+    navigate("./");
   };
 
   return (
@@ -35,9 +35,8 @@ export default function Nav() {
                 Items
               </Button>
             </Link>
-           
           </Typography>
-          
+
           {/* help */}
           <Button style={{ float: "right" }} onClick={() => handleLogout()}>
             LogOut
