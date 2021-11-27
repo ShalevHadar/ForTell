@@ -7,16 +7,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
 } from "@mui/material";
-import Moment from "react-moment";
 import { Box } from "@mui/system";
 import { useCookies } from "react-cookie";
 import { IncidentTable } from "./IncidentTable";
